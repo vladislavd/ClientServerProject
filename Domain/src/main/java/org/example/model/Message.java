@@ -1,11 +1,5 @@
 package org.example.model;
 
-import java.io.Serializable;
-
-/**
- * Hello world!
- *
- */
 public class Message
 {
     private String content;
