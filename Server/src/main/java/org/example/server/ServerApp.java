@@ -6,13 +6,9 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.example.model.Message;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
 public class ServerApp {
 
@@ -35,25 +31,16 @@ public class ServerApp {
 
         private static final String RESPONSE_FOR = "This is the response for ";
         private static final int HTTP_OK = 200;
-        private static final String DELIMITER = "\n";
         private static final ObjectMapper objectMapper = new ObjectMapper();
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             final Message message = objectMapper.readValue(exchange.getRequestBody().readAllBytes(), Message.class);
-            String text = getString(exchange);
             String response = RESPONSE_FOR + message;
             exchange.sendResponseHeaders(HTTP_OK, response.length());
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
-        }
-
-        private String getString(HttpExchange exchange) {
-            return new BufferedReader(
-                    new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))
-                    .lines()
-                    .collect(Collectors.joining(DELIMITER));
         }
     }
 }
